@@ -1,24 +1,25 @@
 /* =========================================================
    Imparo — Firebase configuration + Fixed Master User ID
    =========================================================
-   لا يوجد Firebase Auth.
-   جميع البيانات تُخزَّن تحت مسار ثابت: users/{USER_ID}/...
+   Project: imparo-53eea
+   Mode: No Auth (Fixed Master User ID)
    ========================================================= */
 
 window.FIREBASE_CONFIG = {
-  apiKey:            "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-  authDomain:        "imparo-app.firebaseapp.com",
-  projectId:         "imparo-app",
-  storageBucket:     "imparo-app.appspot.com",
-  messagingSenderId: "123456789012",
-  appId:             "1:123456789012:web:abcdef1234567890"
+
+  apiKey:            "AIzaSyA0Ca2fqu7Pw80sKhXVuqaz5h3UIaau_LQ",
+  authDomain:        "imparo-53eea.firebaseapp.com",
+  projectId:         "imparo-53eea",
+  storageBucket:     "imparo-53eea.firebasestorage.app",
+  messagingSenderId: "558351996816",
+  appId:             "1:558351996816:web:6698c08e636482e2908515"
+
 };
 
 /* =========================================================
-   ⚠️ مهم جدًا:
-   - غيّر هذه القيمة إلى سلسلة طويلة وعشوائية.
-   - استخدم نفس القيمة في firestore.rules.
-   - لا تغيّرها بعد بدء الاستخدام (تغييرها = بيانات جديدة فارغة).
-   - لا تشاركها مع أحد لا تثق به.
+   ⚠️⚠️⚠️  معرّف المستخدم الثابت  ⚠️⚠️⚠️
+   -----------------------------------------------------
+   نفس القيمة يجب أن تكون في firestore.rules
    ========================================================= */
-window.USER_ID = "ahmed_imparo_admin_x7k9m2p4q8w3_v1";
+
+window.USER_ID = "ahmed_imparo_53eea_x7k9m2p4q8w3_admin";
