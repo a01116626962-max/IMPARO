@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /* =========================================================
+       Fixed Master User — وصول عام لمسار واحد فقط
+       -----------------------------------------------------
+       ⚠️ استبدل ahmed_imparo_admin_x7k9m2p4q8w3_v1
+       بنفس القيمة الموجودة في js/config.js
+       ========================================================= */
+
+    match /users/ahmed_imparo_admin_x7k9m2p4q8w3_v1 {
+      allow read, write: if true;
+
+      match /sentences/{sentenceId} {
+        allow read, write: if true;
+      }
+
+      match /dictionary/{wordId} {
+        allow read, write: if true;
+      }
+    }
+
+    /* أي مسار آخر → محظور تمامًا */
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
