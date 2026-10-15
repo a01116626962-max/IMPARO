@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<meta name="theme-color" content="#2d7a68" />
+<title>Imparo — مراجعة الإيطالية</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ============ Boot Screen ============ -->
+  <div id="bootScreen" class="boot-screen">
+    <div class="boot-logo">
+      <span class="brand-dot"></span>
+      <h1>Imparo</h1>
+    </div>
+    <div class="boot-spinner"></div>
+    <p class="boot-text" id="bootText">جاري التحميل…</p>
+  </div>
+
+  <!-- ============ Error Screen ============ -->
+  <div id="errorScreen" class="error-screen" hidden>
+    <div class="error-icon">⚠️</div>
+    <h2>تعذّر تشغيل التطبيق</h2>
+    <p id="errorMessage"></p>
+    <button class="btn btn-primary" onclick="location.reload()">إعادة المحاولة</button>
+  </div>
+
+  <!-- ============ App Root ============ -->
+  <div class="app" id="appRoot" hidden>
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <h1>Imparo</h1>
+      </div>
+      <div class="header-meta">
+        <span class="sync-dot" id="syncDot" title="متصل بـ Firebase"></span>
+        <div class="streak-badge" title="الأيام المتتالية">
+          <span class="flame">🔥</span>
+          <span id="streakValue">0</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-main">
+
+      <!-- ============ Dashboard ============ -->
+      <section id="view-dashboard" class="view is-active">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="statDue">0</div>
+            <div class="stat-label">مستحقة اليوم</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statReviewed">0</div>
+            <div class="stat-label">تمت مراجعتها</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statMistakes">0</div>
+            <div class="stat-label">جمل صعبة</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statFrozen">0</div>
+            <div class="stat-label">مجمّدة</div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-hero" id="btnStartReview">
+          <span class="btn-hero-label">ابدأ المراجعة اليومية</span>
+          <span class="btn-hero-count" id="heroCount">0</span>
+        </button>
+
+        <div class="card quick-add">
+          <h3 class="section-title">➕ إضافة سريعة</h3>
+          <input type="text" id="inputItalian" class="input" placeholder="الجملة الإيطالية…" dir="ltr" autocomplete="off" />
+          <input type="text" id="inputArabic" class="input" placeholder="الترجمة العربية…" autocomplete="off" />
+          <button class="btn btn-secondary" id="btnQuickAdd">إضافة جملة إلى السحابة</button>
+        </div>
+
+        <div class="lists-nav">
+          <button class="list-btn" data-list="today">
+            <span class="list-icon">📅</span>
+            <span class="list-text">المراجعة اليومية</span>
+            <span class="list-count" id="navTodayCount">0</span>
+          </button>
+          <button class="list-btn" data-list="mistakes">
+            <span class="list-icon">⚠️</span>
+            <span class="list-text">الجمل الصعبة</span>
+            <span class="list-count" id="navMistakesCount">0</span>
+          </button>
+          <button class="list-btn" data-list="frozen">
+            <span class="list-icon">❄️</span>
+            <span class="list-text">المجمّدة</span>
+            <span class="list-count" id="navFrozenCount">0</span>
+          </button>
+          <button class="list-btn" data-list="all">
+            <span class="list-icon">📚</span>
+            <span class="list-text">كل الجمل</span>
+            <span class="list-count" id="navAllCount">0</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ============ Review ============ -->
+      <section id="view-review" class="view">
+        <div class="review-header">
+          <button class="btn-icon" id="btnExitReview" aria-label="خروج">✕</button>
+          <div class="review-progress">
+            <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+            <span id="progressText">0 / 0</span>
+          </div>
+        </div>
+
+        <div class="card-stage">
+          <div class="flip-card" id="flipCard">
+            <div class="flip-card-inner">
+              <div class="flip-face flip-front">
+                <div class="sentence-it" id="cardItalian"></div>
+                <button class="btn-speak" id="btnSpeak" title="إعادة النطق">🔊</button>
+                <div class="hint">اضغط لكشف الترجمة</div>
+              </div>
+              <div class="flip-face flip-back">
+                <div class="sentence-ar" id="cardArabic"></div>
+                <div class="hint">قيّم مستوى صعوبة البطاقة</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rating-row" id="ratingRow">
+          <button class="btn-rating btn-hard" data-rating="hard">
+            <span class="rating-emoji">😰</span>
+            <span class="rating-label">صعب</span>
+          </button>
+          <button class="btn-rating btn-medium" data-rating="medium">
+            <span class="rating-emoji">🙂</span>
+            <span class="rating-label">متوسط</span>
+          </button>
+          <button class="btn-rating btn-easy" data-rating="easy">
+            <span class="rating-emoji">😎</span>
+            <span class="rating-label">سهل</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ============ Summary ============ -->
+      <section id="view-summary" class="view">
+        <div class="summary-emoji">🎉</div>
+        <h2 class="summary-title">أحسنت!</h2>
+        <p class="summary-sub" id="summarySub">أكملت مراجعة اليوم</p>
+        <div class="summary-stats" id="summaryStats"></div>
+        <button class="btn btn-primary" id="btnBackHome">العودة للرئيسية</button>
+      </section>
+
+      <!-- ============ List ============ -->
+      <section id="view-list" class="view">
+        <div class="list-header">
+          <button class="btn-icon" id="btnBackList" aria-label="رجوع">←</button>
+          <h2 id="listTitle">القائمة</h2>
+        </div>
+        <div class="list-actions" id="listActions"></div>
+        <div class="list-content" id="listContent"></div>
+      </section>
+
+    </main>
+
+    <!-- Dictionary Popup -->
+    <div class="popup-overlay" id="popupOverlay">
+      <div class="popup" id="popupDict">
+        <div class="popup-header">
+          <h4 id="popupWord" dir="ltr">…</h4>
+          <button class="btn-icon" id="popupClose" aria-label="إغلاق">✕</button>
+        </div>
+        <div class="popup-body">
+          <div class="popup-meaning" id="popupMeaning">—</div>
+          <input type="text" class="input" id="popupInput" placeholder="أضف/عدّل المعنى…" />
+          <button class="btn btn-secondary" id="popupSave">حفظ المعنى سحابيًا</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <!-- Firebase SDKs (بدون Auth) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+  <!-- App modules (الترتيب إلزامي) -->
+  <script src="js/config.js"></script>
+  <script src="js/srs.js"></script>
+  <script src="js/speech.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
