@@ -1,13 +1,6 @@
 /* =========================================================
    Store — طبقة Firestore مع Fixed Master User ID
-   -----------------------------------------------------
-   Firestore structure:
-     users/{USER_ID}
-       ├── streak, last_review_day, reviewed_today, reviewed_day_key
-       ├── sentences/{sentenceId}
-       └── dictionary/{wordKey}
-
-   لا يوجد Firebase Authentication. كل شيء عبر مسار ثابت.
+   (نسخة مصحّحة — إصلاح ترتيب ready flag)
    ========================================================= */
 
 window.Store = (function () {
@@ -22,7 +15,7 @@ window.Store = (function () {
   }
 
   /* =========================================================
-     Init — بدون Auth
+     Init
      ========================================================= */
   async function init(onStatus) {
     if (!window.firebase) {
@@ -46,16 +39,32 @@ window.Store = (function () {
     if (!firebase.apps.length) firebase.initializeApp(cfg);
     db = firebase.firestore();
 
+    // ✅ الآن يمكن تعليم الطبقة كجاهزة (db + uid موجودان)
+    ready = true;
+
+    // كاش IndexedDB داخلي (اختياري — نتجاهل الفشل بهدوء)
     try {
       await db.enablePersistence({ synchronizeTabs: true });
     } catch (e) {
       console.warn('[Store] enablePersistence غير متاح:', e.code || e.message);
     }
 
+    // تحقق سريع من صلاحية المسار (اختياري — يساعد في كشف مشاكل القواعد مبكرًا)
     if (onStatus) onStatus('جارٍ التحقق من المسار…');
-    await userRef().get();
+    try {
+      await db.collection('users').doc(uid).get();
+    } catch (err) {
+      // لو فشل التحقق، نُبلّغ لكن نُبقي ready = true
+      // (قد ينجح الحفظ لاحقًا بعد نشر القواعد الصحيحة)
+      console.warn('[Store] تحقق المسار فشل:', err.code || err.message);
+      throw new Error(
+        'فشل الوصول إلى قاعدة البيانات. تحقق من: ' +
+        '(1) نشر firestore.rules في تبويب Firestore (ليس Realtime)، ' +
+        '(2) تطابق USER_ID بين config.js و firestore.rules. ' +
+        'تفاصيل: ' + (err.code || err.message)
+      );
+    }
 
-    ready = true;
     console.info('[Store] جاهز. USER_ID =', uid);
     return uid;
   }
